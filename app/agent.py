@@ -8,6 +8,7 @@ from langchain.prompts import PromptTemplate
 from langchain_community.chat_models import ChatOllama
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import Chroma
+import chromadb
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langgraph.graph import END, StateGraph
