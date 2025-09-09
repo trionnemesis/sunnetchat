@@ -83,8 +83,8 @@ def grade_documents(state):
     documents = state["documents"]
     
     prompt = PromptTemplate(
-        template="Given the user's question and retrieved documents, classify if the documents are relevant to answer the question. 
-        Provide a binary score 'yes' or 'no' in JSON format. Question: {question} \n\n Documents: {documents} ",
+        template="Given the user's question and retrieved documents, classify if the documents are relevant to answer the question. " +
+        "Provide a binary score 'yes' or 'no' in JSON format. Question: {question} \n\n Documents: {documents} ",
         input_variables=["question", "documents"],
     )
     chain = prompt | llm | JsonOutputParser()
@@ -114,9 +114,9 @@ def generate(state):
     question = state["question"]
     documents = state["documents"]
     prompt = PromptTemplate(
-        template="You are an assistant for question-answering tasks. Use the following retrieved context to answer the question. 
-        If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise. 
-        Question: {question} \n\n Context: {context} \n\n Answer:" ,
+        template="You are an assistant for question-answering tasks. Use the following retrieved context to answer the question. " +
+        "If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise. " +
+        "Question: {question} \n\n Context: {context} \n\n Answer:",
         input_variables=["question", "context"],
     )
     chain = prompt | str_llm | StrOutputParser()
