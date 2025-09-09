@@ -1,0 +1,33 @@
+# Core Frameworks
+fastapi
+uvicorn[standard]
+python-dotenv
+
+# LangChain & AI
+langchain
+langgraph
+langchain_community
+langchain-google-genai
+ollama
+
+# Vector Database
+chromadb-client
+
+# Document Loading
+unstructured[docx,pdf,images,pptx]
+pillow
+
+# Slack Integration
+slack_bolt
+
+# Google Drive API
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+
+# Web Searching
+tavily-python
+
+# Testing
+pytest
+httpx

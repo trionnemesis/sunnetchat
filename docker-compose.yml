@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: slack_agent_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - C:\SUNNET:/app/local_documents
+      - ./google-credentials.json:/app/google-credentials.json
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - ollama
+      - chromadb
+    networks:
+      - agent_network
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - agent_network
+
+  chromadb:
+    image: chromadb/chroma
+    container_name: chromadb
+    restart: unless-stopped
+    ports:
+      - "8001:8000" # Avoid port conflict with app
+    volumes:
+      - chroma_data:/chroma/.chroma/
+    networks:
+      - agent_network
+
+volumes:
+  ollama_data:
+  chroma_data:
+
+networks:
+  agent_network:
+    driver: bridge
