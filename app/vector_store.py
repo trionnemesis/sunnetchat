@@ -5,7 +5,10 @@ from langchain_core.vectorstores import VectorStore
 from langchain_community.vectorstores import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-def build_vector_store(documents: List[Document], embedding_model: Embeddings) -> VectorStore:
+
+def build_vector_store(
+    documents: List[Document], embedding_model: Embeddings
+) -> VectorStore:
     """
     Builds a vector store from a list of documents.
 
@@ -27,8 +30,7 @@ def build_vector_store(documents: List[Document], embedding_model: Embeddings) -
     # 2. Create the vector store from the chunks using Chroma DB.
     # This will run in-memory by default.
     vector_store = Chroma.from_documents(
-        documents=all_splits,
-        embedding=embedding_model
+        documents=all_splits, embedding=embedding_model
     )
 
     return vector_store

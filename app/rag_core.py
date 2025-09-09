@@ -20,8 +20,8 @@ OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
 
 # 1. Vector Store Retriever
 vectorstore = Chroma(
-    persist_directory=VECTOR_DB_PATH, 
-    embedding_function=GoogleGenerativeAIEmbeddings(model=EMBEDDING_MODEL)
+    persist_directory=VECTOR_DB_PATH,
+    embedding_function=GoogleGenerativeAIEmbeddings(model=EMBEDDING_MODEL),
 )
 retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
@@ -53,19 +53,21 @@ rag_chain = (
     | StrOutputParser()
 )
 
+
 def get_answer(question: str) -> str:
     """
     Invokes the RAG chain with a question and returns the answer.
     """
     if not os.path.exists(VECTOR_DB_PATH):
         return "錯誤：向量資料庫不存在。請先執行 `scripts/ingest.py` 來建立資料庫。"
-    
+
     print(f"Invoking RAG chain for question: {question}")
     response = rag_chain.invoke(question)
     return response
 
+
 # Example usage (for direct testing)
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("--- RAG Core Test ---")
     # Make sure the vector database exists before running this test.
     test_question = "什麼是 LangChain?"

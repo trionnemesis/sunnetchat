@@ -2,18 +2,23 @@ import os
 import pytest
 from unittest.mock import patch, MagicMock
 
-# This is a placeholder for actual tests. 
+# This is a placeholder for actual tests.
 # In a real TDD cycle, you would write a failing test first, then the implementation.
+
 
 @pytest.fixture
 def mock_env():
     """Fixture to mock environment variables."""
-    with patch.dict(os.environ, {
-        "LOCAL_KNOWLEDGE_BASE_PATH": "/tmp/fake_docs",
-        "VECTOR_DB_PATH": "/tmp/test_chroma_db",
-        "EMBEDDING_MODEL": "models/embedding-001"
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "LOCAL_KNOWLEDGE_BASE_PATH": "/tmp/fake_docs",
+            "VECTOR_DB_PATH": "/tmp/test_chroma_db",
+            "EMBEDDING_MODEL": "models/embedding-001",
+        },
+    ):
         yield
+
 
 def test_ingestion_placeholder(mock_env):
     """
@@ -27,15 +32,16 @@ def test_ingestion_placeholder(mock_env):
     # TODO: Mock the loaders and vector store to test the ingest script logic
     assert 1 == 1
 
+
 # Example of a more concrete test you would write:
 # def test_ingest_script_calls_loader(mock_env, monkeypatch):
 #     """Test that the ingest script calls the document loader."""
 #     mock_loader = MagicMock()
 #     monkeypatch.setattr("scripts.ingest.DirectoryLoader", mock_loader)
-    
+
 #     from scripts import ingest
 #     ingest.main()
-    
+
 #     # Assert that the loader was initialized with the correct path
 #     mock_loader.assert_called_once_with(
 #         "/tmp/fake_docs",

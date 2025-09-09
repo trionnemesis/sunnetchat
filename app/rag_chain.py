@@ -4,6 +4,7 @@ from langchain_core.runnables import Runnable, RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.vectorstores import VectorStoreRetriever
 
+
 def create_rag_chain(retriever: VectorStoreRetriever, llm: LLM) -> Runnable:
     """
     Creates a Retrieval-Augmented Generation (RAG) chain.

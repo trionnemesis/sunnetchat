@@ -7,6 +7,7 @@ from slack_bolt.adapter.fastapi import SlackRequestHandler
 # This placeholder will be patched during tests
 rag_chain = object()
 
+
 def create_app() -> FastAPI:
     """
     Factory to create the FastAPI app and the Slack app.
@@ -15,14 +16,14 @@ def create_app() -> FastAPI:
     # The App is now created inside the factory, not on module import
     slack_app = App(
         token=os.environ.get("SLACK_BOT_TOKEN", "xoxb-fake-token"),
-        signing_secret=os.environ.get("SLACK_SIGNING_SECRET", "fake-secret")
+        signing_secret=os.environ.get("SLACK_SIGNING_SECRET", "fake-secret"),
     )
 
     # The handler function is defined inside the factory as well
     @slack_app.event("app_mention")
     def handle_app_mention(body: dict, say):
         text = body["event"]["text"]
-        question = re.sub(r'<@.*?>', '', text).strip()
+        question = re.sub(r"<@.*?>", "", text).strip()
         answer = rag_chain.invoke(question)
         say(text=answer)
 

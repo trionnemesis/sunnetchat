@@ -7,6 +7,7 @@ from langchain_community.document_loaders import (
     Docx2txtLoader,
 )
 
+
 def load_documents_from_path(path: str) -> List[Document]:
     """
     Loads documents from a given file or directory path.
@@ -52,11 +53,11 @@ def load_single_document(file_path: str) -> List[Document]:
     extension = extension.lower()
 
     loader = None
-    if extension == '.txt':
-        loader = TextLoader(file_path, encoding='utf-8')
-    elif extension == '.pdf':
+    if extension == ".txt":
+        loader = TextLoader(file_path, encoding="utf-8")
+    elif extension == ".pdf":
         loader = PyPDFLoader(file_path)
-    elif extension == '.docx':
+    elif extension == ".docx":
         loader = Docx2txtLoader(file_path)
     else:
         raise NotImplementedError(f"File type '{extension}' is not supported.")

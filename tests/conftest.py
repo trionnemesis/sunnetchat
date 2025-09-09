@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
+
 @pytest.fixture(autouse=True)
 def prevent_slack_api_calls(monkeypatch):
     """
@@ -8,6 +9,7 @@ def prevent_slack_api_calls(monkeypatch):
     the slack_bolt.App from making real API calls during initialization in any test.
     This runs before any test collection happens.
     """
+
     def do_nothing_init(self, *args, **kwargs):
         # The original method in slack_bolt tries to make an API call.
         # We replace it with this to prevent that during tests.
@@ -15,4 +17,5 @@ def prevent_slack_api_calls(monkeypatch):
         self._client = MagicMock()
 
     from slack_bolt.app import App
+
     monkeypatch.setattr(App, "_init_middleware_list", do_nothing_init)
