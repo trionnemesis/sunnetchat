@@ -30,4 +30,6 @@ tavily-python
 
 # Testing
 pytest
+pytest-asyncio
+pytest-cov
 httpx
