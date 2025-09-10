@@ -1,34 +1,34 @@
-# SunnetChat 🤖💬
+# SunnetChat 智慧聊天機器人 🤖💬
 
-[![CI/CD Pipeline](https://github.com/trionnemesis/sunnetchat/actions/workflows/ci.yml/badge.svg)](https://github.com/trionnemesis/sunnetchat/actions/workflows/ci.yml)
+[![CI/CD 流水線](https://github.com/trionnemesis/sunnetchat/actions/workflows/ci.yml/badge.svg)](https://github.com/trionnemesis/sunnetchat/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi)](https://fastapi.tiangolo.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![授權條款: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> An intelligent AI-powered Slack chatbot with advanced RAG (Retrieval-Augmented Generation) capabilities for document processing, knowledge management, and real-time information retrieval.
+> 一個具備先進 RAG（檢索增強生成）功能的智慧 AI Slack 聊天機器人，專為文件處理、知識管理和即時資訊檢索而設計。
 
-## 🌟 Features
+## 🌟 主要功能
 
-### Core Capabilities
-- **🔍 Intelligent Document Search**: Retrieves relevant information from your internal knowledge base using vector similarity search
-- **🌐 Web Search Integration**: Falls back to live web search when internal documents don't contain the answer
-- **📚 Knowledge Storage**: Automatically saves new knowledge to Google Drive for future reference
-- **⚡ Real-time Processing**: Built with FastAPI for high-performance async operations
-- **🔒 Enterprise Security**: Secure Slack integration with proper authentication
+### 核心能力
+- **🔍 智慧文件搜尋**：使用向量相似度搜尋從您的內部知識庫中檢索相關資訊
+- **🌐 網路搜尋整合**：當內部文件不包含答案時，自動回退到即時網路搜尋
+- **📚 知識儲存**：自動將新知識儲存到 Google Drive 以供未來參考
+- **⚡ 即時處理**：基於 FastAPI 構建，支援高效能非同步操作
+- **🔒 企業級安全**：具備適當身份驗證的安全 Slack 整合
 
-### RAG Pipeline
-- **Vector Embeddings**: Uses Google's `embedding-001` model for semantic understanding
-- **Document Grading**: Intelligent relevance scoring to determine best information sources
-- **Multi-modal Search**: Supports text, images, PDFs, DOCX, PPTX, and more
-- **Conversation Flow**: LangGraph-powered conversation management
+### RAG 流水線
+- **向量嵌入**：使用 Google 的 `embedding-001` 模型進行語意理解
+- **文件評分**：智慧相關性評分以確定最佳資訊來源
+- **多模態搜尋**：支援文字、圖片、PDF、DOCX、PPTX 等多種格式
+- **對話流程**：由 LangGraph 驅動的對話管理
 
-### Deployment & Scaling
-- **🐳 Docker Ready**: Full containerization with Docker Compose
-- **🚀 Production Ready**: Optimized for deployment with health checks and monitoring
-- **🔄 CI/CD Pipeline**: Comprehensive testing, security scanning, and automated deployment
-- **📊 Observability**: Built-in logging and error handling
+### 部署與擴展
+- **🐳 Docker 就緒**：使用 Docker Compose 完整容器化
+- **🚀 生產就緒**：針對部署進行最佳化，包含健康檢查和監控
+- **🔄 CI/CD 流水線**：全面的測試、安全掃描和自動化部署
+- **📊 可觀測性**：內建日誌記錄和錯誤處理
 
-## 🏗️ Architecture
+## 🏗️ 系統架構
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -52,17 +52,17 @@
            └─────────────────┘                                              └─────────────────┘
 ```
 
-## 🚀 Quick Start
+## 🚀 快速開始
 
-### Prerequisites
+### 前置需求
 
-- Docker & Docker Compose
+- Docker 和 Docker Compose
 - Python 3.11+
-- Slack App with Bot Token
-- Google API Credentials (for Drive & Embeddings)
-- Tavily API Key (for web search)
+- 具有 Bot Token 的 Slack 應用程式
+- Google API 憑證（用於 Drive 和嵌入模型）
+- Tavily API 金鑰（用於網路搜尋）
 
-### 1. Clone & Setup
+### 1. 複製專案並設定
 
 ```bash
 git clone https://github.com/trionnemesis/sunnetchat.git
@@ -70,97 +70,97 @@ cd sunnetchat
 cp .env.example .env
 ```
 
-### 2. Configure Environment
+### 2. 設定環境變數
 
-Edit `.env` file with your credentials:
+編輯 `.env` 檔案並填入您的憑證：
 
 ```bash
-# Slack Configuration
+# Slack 設定
 SLACK_BOT_TOKEN="xoxb-your-bot-token-here"
 SLACK_SIGNING_SECRET="your-slack-signing-secret-here"
 
-# Google Services
+# Google 服務
 GOOGLE_API_KEY="your-google-api-key"
 GOOGLE_DRIVE_FOLDER_ID="your-google-drive-folder-id"
 GOOGLE_APPLICATION_CREDENTIALS_JSON='{"type": "service_account", ...}'
 
-# Tavily Web Search
+# Tavily 網路搜尋
 TAVILY_API_KEY="tvly-your-tavily-api-key"
 
-# Local Knowledge Base
+# 本地知識庫
 LOCAL_KNOWLEDGE_BASE_PATH="/path/to/your/documents"
 ```
 
-### 3. Launch with Docker
+### 3. 使用 Docker 啟動
 
 ```bash
-# Start all services
+# 啟動所有服務
 docker-compose up -d
 
-# Check status
+# 檢查狀態
 docker-compose ps
 
-# View logs
+# 查看日誌
 docker-compose logs -f app
 ```
 
-### 4. Setup Slack Integration
+### 4. 設定 Slack 整合
 
-1. Create a Slack App at [api.slack.com](https://api.slack.com/apps)
-2. Enable Event Subscriptions: `http://your-domain.com/slack/events`
-3. Subscribe to `app_mention` events
-4. Install app to workspace
-5. Invite bot to channels: `/invite @YourBot`
+1. 在 [api.slack.com](https://api.slack.com/apps) 建立 Slack 應用程式
+2. 啟用事件訂閱：`http://your-domain.com/slack/events`
+3. 訂閱 `app_mention` 事件
+4. 將應用程式安裝到工作區
+5. 邀請機器人加入頻道：`/invite @YourBot`
 
-## 🧪 Development
+## 🧪 開發指南
 
-### Local Development Setup
+### 本地開發環境設定
 
 ```bash
-# Create virtual environment
+# 建立虛擬環境
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows 系統：venv\Scripts\activate
 
-# Install dependencies
+# 安裝相依套件
 pip install -r requirements.txt
 
-# Start services separately
+# 分別啟動服務
 docker-compose up chromadb ollama -d
 
-# Run app locally
+# 本地執行應用程式
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Running Tests
+### 執行測試
 
 ```bash
-# Run all tests
+# 執行所有測試
 pytest
 
-# Run with coverage
+# 執行測試並產生覆蓋率報告
 pytest --cov=app --cov-report=html
 
-# Run specific test file
+# 執行特定測試檔案
 pytest tests/test_api.py -v
 
-# Run integration tests
+# 執行整合測試
 pytest tests/test_slack_integration.py -v
 ```
 
-### Code Quality
+### 程式碼品質檢查
 
 ```bash
-# Format code
+# 格式化程式碼
 black app/ tests/
 
-# Lint code
+# 程式碼檢查
 flake8 app/ tests/
 
-# Type checking (if using mypy)
+# 型別檢查（如果使用 mypy）
 mypy app/
 ```
 
-## 📁 Project Structure
+## 📁 專案結構
 
 ```
 sunnetchat/
@@ -189,113 +189,113 @@ sunnetchat/
 └── 📖 README.md             # This file
 ```
 
-## 🔧 Configuration
+## 🔧 設定配置
 
-### Environment Variables
+### 環境變數
 
-| Variable | Description | Required | Default |
+| 變數名稱 | 描述 | 必要性 | 預設值 |
 |----------|-------------|----------|---------|
-| `SLACK_BOT_TOKEN` | Slack Bot User OAuth Token | ✅ | - |
-| `SLACK_SIGNING_SECRET` | Slack App Signing Secret | ✅ | - |
-| `GOOGLE_API_KEY` | Google API Key for Embeddings | ✅ | - |
-| `GOOGLE_DRIVE_FOLDER_ID` | Google Drive folder for storage | ✅ | - |
-| `TAVILY_API_KEY` | Tavily API key for web search | ✅ | - |
-| `LOCAL_KNOWLEDGE_BASE_PATH` | Path to local documents | ❌ | `/app/local_documents` |
-| `CHROMA_HOST` | ChromaDB host | ❌ | `chromadb` |
-| `CHROMA_PORT` | ChromaDB port | ❌ | `8000` |
-| `OLLAMA_BASE_URL` | Ollama service URL | ❌ | `http://ollama:11434` |
-| `LLM_MODEL` | Ollama model name | ❌ | `llama3` |
+| `SLACK_BOT_TOKEN` | Slack 機器人的 OAuth Token | ✅ | - |
+| `SLACK_SIGNING_SECRET` | Slack 應用程式簽名秘鑰 | ✅ | - |
+| `GOOGLE_API_KEY` | Google 嵌入模型的 API 金鑰 | ✅ | - |
+| `GOOGLE_DRIVE_FOLDER_ID` | Google Drive 儲存資料夾 ID | ✅ | - |
+| `TAVILY_API_KEY` | Tavily 網路搜尋的 API 金鑰 | ✅ | - |
+| `LOCAL_KNOWLEDGE_BASE_PATH` | 本地文件路徑 | ❌ | `/app/local_documents` |
+| `CHROMA_HOST` | ChromaDB 主機位址 | ❌ | `chromadb` |
+| `CHROMA_PORT` | ChromaDB 連接埠 | ❌ | `8000` |
+| `OLLAMA_BASE_URL` | Ollama 服務 URL | ❌ | `http://ollama:11434` |
+| `LLM_MODEL` | Ollama 模型名稱 | ❌ | `llama3` |
 
-### Docker Services
+### Docker 服務
 
-- **app**: Main FastAPI application (Port: 8000)
-- **ollama**: Local LLM service (Port: 11434)
-- **chromadb**: Vector database (Port: 8001)
+- **app**：主要的 FastAPI 應用程式（連接埠：8000）
+- **ollama**：本地 LLM 服務（連接埠：11434）
+- **chromadb**：向量資料庫（連接埠：8001）
 
-## 🤖 Usage
+## 🤖 使用方式
 
-### Slack Commands
+### Slack 指令
 
-Mention your bot in any channel:
+在任何頻道中提及您的機器人：
 
 ```
-@SunnetBot What is our company policy on remote work?
-@SunnetBot How do I set up the development environment?
-@SunnetBot What are the latest industry trends in AI?
+@SunnetBot 我們公司的遠端工作政策是什麼？
+@SunnetBot 如何設定開發環境？
+@SunnetBot AI 領域的最新行業趋勢是什麼？
 ```
 
-### API Endpoints
+### API 端點
 
-- `GET /` - Health check endpoint
-- `POST /slack/events` - Slack events webhook
-- `GET /docs` - API documentation (Swagger UI)
+- `GET /` - 健康檢查端點
+- `POST /slack/events` - Slack 事件 webhook
+- `GET /docs` - API 文件（Swagger UI）
 
-## 🧠 How It Works
+## 🧠 運作原理
 
-### RAG Pipeline Flow
+### RAG 流水線流程
 
-1. **Question Reception**: User mentions bot in Slack
-2. **Document Retrieval**: Searches internal knowledge base using vector similarity
-3. **Relevance Grading**: AI determines if retrieved documents are relevant
-4. **Response Generation**: 
-   - If relevant documents found → Generate answer from internal knowledge
-   - If no relevant documents → Search web and generate answer
-5. **Knowledge Storage**: New information automatically saved to Google Drive
-6. **Response Delivery**: Final answer sent back to Slack user
+1. **接收問題**：使用者在 Slack 中提及機器人
+2. **文件檢索**：使用向量相似度搜尋內部知識庫
+3. **相關性評分**：AI 判斷檢索到的文件是否相關
+4. **生成回答**：
+   - 如果找到相關文件 → 從內部知識生成答案
+   - 如果沒有相關文件 → 搜尋網路並生成答案
+5. **知識儲存**：新資訊自動儲存到 Google Drive
+6. **回答傳遞**：將最終答案傳回給 Slack 使用者
 
-### Supported Document Types
+### 支援的文件類型
 
-- **Text**: `.txt`, `.md`, `.csv`
-- **Office**: `.docx`, `.pptx`, `.xlsx`
-- **PDF**: `.pdf` files with OCR support
-- **Images**: `.jpg`, `.png`, `.gif` (with OCR)
-- **Web**: URLs and web scraping capabilities
+- **文字檔案**：`.txt`、`.md`、`.csv`
+- **辦公文件**：`.docx`、`.pptx`、`.xlsx`
+- **PDF 文件**：支援 OCR 的 `.pdf` 檔案
+- **圖片檔案**：`.jpg`、`.png`、`.gif`（支援 OCR）
+- **網頁內容**：URL 和網頁爬取功能
 
-## 🔄 CI/CD Pipeline
+## 🔄 CI/CD 流水線
 
-The project includes a comprehensive GitHub Actions pipeline:
+這個專案包含了完整的 GitHub Actions 流水線：
 
-### Automated Testing
-- ✅ Unit and integration tests
-- ✅ Code coverage reporting
-- ✅ Linting and formatting checks
-- ✅ Security vulnerability scanning
+### 自動化測試
+- ✅ 單元測試和整合測試
+- ✅ 程式碼覆蓋率報告
+- ✅ 程式碼檢查和格式化驗證
+- ✅ 安全漏洞掃描
 
-### Build & Deploy
-- 🏗️ Docker image building
-- 🧪 Container functionality testing
-- 🔒 Security scanning with Trivy
-- 📊 Code quality metrics
+### 構建與部署
+- 🏗️ Docker 鏡像構建
+- 🧪 容器功能測試
+- 🔒 使用 Trivy 進行安全掃描
+- 📊 程式碼品質指標
 
-### Triggers
-- Push to `master` or `develop` branches
-- Pull requests to `master`
-- Manual workflow dispatch
+### 觸發條件
+- 推送到 `master` 或 `develop` 分支
+- 向 `master` 分支發起 Pull Request
+- 手動觸發工作流程
 
-## 🔒 Security
+## 🔒 安全性
 
-### Best Practices
-- 🔐 Environment variables for sensitive data
-- 🛡️ Input validation and sanitization
-- 🔍 Regular dependency updates
-- 📝 Comprehensive logging without exposing secrets
-- 🚨 Automated security scanning
+### 最佳實踐
+- 🔐 使用環境變數儲存敏感資料
+- 🛡️ 輸入驗證和清理
+- 🔍 定期更新相依套件
+- 📝 全面的日誌記錄，不暴露敏感資訊
+- 🚨 自動化安全掃描
 
-### Slack Security
-- ✅ Signature verification for all requests
-- ✅ Bot token validation
-- ✅ Rate limiting protection
-- ✅ Secure webhook endpoints
+### Slack 安全性
+- ✅ 所有要求的簽名驗證
+- ✅ 機器人令牌驗證
+- ✅ 限速保護
+- ✅ 安全的 webhook 端點
 
-## 🚀 Production Deployment
+## 🚀 生產環境部署
 
-### Docker Deployment
+### Docker 部署
 
 ```bash
-# Production build
+# 生產環境構建
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
-# With custom configuration
+# 自定義設定
 docker run -d \
   --name sunnetchat \
   -p 8000:8000 \
@@ -304,115 +304,115 @@ docker run -d \
   sunnetchat:latest
 ```
 
-### Environment Considerations
+### 環境考量事項
 
-- **Resource Requirements**: Minimum 2GB RAM, 2 CPU cores
-- **Storage**: Vector database requires persistent storage
-- **Network**: Ensure firewall allows Slack webhook access
-- **Monitoring**: Set up health checks and alerting
+- **資源需求**：最低 2GB 記憶體、2 CPU 核心
+- **儲存空間**：向量資料庫需要持久化儲存
+- **網路設定**：確保防火牆允許 Slack webhook 訪問
+- **監控**：設定健康檢查和警告
 
-## 🤝 Contributing
+## 🤝 貢獻指南
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+歡迎大家貢獻！請參閱我們的[貢獻指南](CONTRIBUTING.md)以獲取詳細資訊。
 
-### Development Workflow
+### 開發工作流程
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass (`pytest`)
-6. Commit your changes (`git commit -m 'Add amazing feature'`)
-7. Push to the branch (`git push origin feature/amazing-feature`)
-8. Open a Pull Request
+1. Fork 這個儲存庫
+2. 建立功能分支 (`git checkout -b feature/amazing-feature`)
+3. 進行修改
+4. 為新功能新增測試
+5. 確保所有測試通過 (`pytest`)
+6. 提交修改 (`git commit -m 'Add amazing feature'`)
+7. 推送到分支 (`git push origin feature/amazing-feature`)
+8. 開啟 Pull Request
 
-### Code Standards
+### 程式碼標準
 
-- Follow PEP 8 style guidelines
-- Add type hints where appropriate
-- Write comprehensive tests
-- Update documentation for new features
-- Ensure CI/CD pipeline passes
+- 遵循 PEP 8 編程風格指南
+- 適當新增型別提示
+- 編寫全面的測試
+- 更新新功能的文件
+- 確保 CI/CD 流水線通過
 
-## 📚 Documentation
+## 📚 文件
 
-- **API Docs**: Available at `/docs` when running the application
-- **Architecture**: See `docs/architecture.md`
-- **Deployment**: See `docs/deployment.md`
-- **Troubleshooting**: See `docs/troubleshooting.md`
+- **API 文件**：應用程式執行時可在 `/docs` 查看
+- **系統架構**：參閱 `docs/architecture.md`
+- **部署指南**：參閱 `docs/deployment.md`
+- **問題排除**：參閱 `docs/troubleshooting.md`
 
-## 🔧 Troubleshooting
+## 🔧 問題排除
 
-### Common Issues
+### 常見問題
 
-#### Bot Not Responding
+#### 機器人無回應
 ```bash
-# Check container status
+# 檢查容器狀態
 docker-compose ps
 
-# Check logs
+# 檢查日誌
 docker-compose logs app
 
-# Verify Slack webhook
+# 驗證 Slack webhook
 curl -X POST http://localhost:8000/slack/events
 ```
 
-#### Vector Database Issues
+#### 向量資料庫問題
 ```bash
-# Reset ChromaDB
+# 重設 ChromaDB
 docker-compose down -v
 docker-compose up chromadb -d
 
-# Re-ingest documents
+# 重新匯入文件
 python scripts/ingest.py
 ```
 
-#### Ollama Model Issues
+#### Ollama 模型問題
 ```bash
-# Pull required model
+# 下載所需模型
 docker exec -it ollama ollama pull llama3
 
-# List available models
+# 列出可用模型
 docker exec -it ollama ollama list
 ```
 
-## 📈 Performance Optimization
+## 📈 效能最佳化
 
-### Vector Database Tuning
-- Adjust chunk sizes for better retrieval
-- Optimize embedding dimensions
-- Use proper indexing strategies
+### 向量資料庫調整
+- 調整區塊大小以改善檢索效果
+- 最佳化嵌入維度
+- 使用適當的索引策略
 
-### LLM Performance
-- Choose appropriate model sizes
-- Implement response caching
-- Use streaming for long responses
+### LLM 效能
+- 選擇適當的模型大小
+- 實現回應快取
+- 為長回應使用串流
 
-### Scaling Considerations
-- Implement horizontal scaling with load balancers
-- Use Redis for session management
-- Consider multi-region deployment
+### 擴展考量事項
+- 使用負載均衡器實現水平擴展
+- 使用 Redis 進行工作階段管理
+- 考量多區域部署
 
-## 📄 License
+## 📄 授權條款
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+此專案採用 MIT 授權條款 - 請參閱 [LICENSE](LICENSE) 檔案以獲取詳細資訊。
 
-## 🙏 Acknowledgments
+## 🙏 致謝
 
-- **LangChain**: For the excellent RAG framework
-- **FastAPI**: For the high-performance web framework  
-- **Slack**: For the comprehensive bot platform
-- **ChromaDB**: For the vector database solution
-- **Ollama**: For local LLM capabilities
+- **LangChain**：提供優秀的 RAG 框架
+- **FastAPI**：提供高效能的 Web 框架
+- **Slack**：提供全面的機器人平台
+- **ChromaDB**：提供向量資料庫解決方案
+- **Ollama**：提供本地 LLM 功能
 
-## 📞 Support
+## 📞 支援與聯繫
 
-- **Issues**: [GitHub Issues](https://github.com/trionnemesis/sunnetchat/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/trionnemesis/sunnetchat/discussions)
-- **Email**: support@sunnetchat.com
+- **問題回報**：[GitHub Issues](https://github.com/trionnemesis/sunnetchat/issues)
+- **討論區**：[GitHub Discussions](https://github.com/trionnemesis/sunnetchat/discussions)
+- **電子郵件**：support@sunnetchat.com
 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by the SunnetChat team</sub>
+  <sub>由 SunnetChat 團隊用 ❤️ 精心打造</sub>
 </div>
