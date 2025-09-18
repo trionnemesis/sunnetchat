@@ -37,7 +37,8 @@ GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
 
 def upload_qa_to_drive(question: str, answer: str):
     """
-    Uploads a question and its answer as a new text file to a specified Google Drive folder.
+    Uploads a question and its answer as a new text file to a specified
+    Google Drive folder.
     """
     if not drive_service or not GOOGLE_DRIVE_FOLDER_ID:
         logger.error("Google Drive service is not configured. Skipping upload.")
@@ -48,7 +49,10 @@ def upload_qa_to_drive(question: str, answer: str):
         file_name = f"{question[:50].replace(' ', '_').replace('/', '_')}.txt"
         file_content = f"Question:\n{question}\n\nAnswer:\n{answer}"
 
-        file_metadata = {"name": file_name, "parents": [GOOGLE_DRIVE_FOLDER_ID]}
+        file_metadata = {
+            "name": file_name,
+            "parents": [GOOGLE_DRIVE_FOLDER_ID],
+        }
 
         # Create a file-like object from the content string
         fh = io.BytesIO(file_content.encode("utf-8"))
@@ -62,7 +66,8 @@ def upload_qa_to_drive(question: str, answer: str):
         )
 
         logger.info(
-            f"Successfully uploaded new knowledge to Google Drive. File ID: {file.get('id')}"
+            f"Successfully uploaded new knowledge to Google Drive. "
+            f"File ID: {file.get('id')}"
         )
 
     except Exception as e:

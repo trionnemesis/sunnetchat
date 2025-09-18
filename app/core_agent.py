@@ -5,7 +5,6 @@ with comprehensive async support and error handling.
 """
 
 import os
-import json
 import asyncio
 from datetime import datetime
 from typing import List, Dict, TypedDict, Optional, Any
@@ -13,7 +12,7 @@ from enum import Enum
 import logging
 
 from langchain.schema import Document
-from langchain.prompts import PromptTemplate, ChatPromptTemplate
+from langchain.prompts import PromptTemplate
 from langchain_community.chat_models import ChatOllama
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import Chroma
@@ -102,13 +101,14 @@ class PromptTemplates:
         if language == "zh-TW":
             template = (
                 "您是一位資訊分級助理。評估檢索到的文件是否與使用者問題相關。"
-                '只需回答 \'yes\' 或 \'no\'，格式為 JSON: {"score": "yes"} 或 {"score": "no"}。'
-                "\n\n問題: {question}\n\n文件: {documents}"
+                "只需回答 'yes' 或 'no'，格式為 JSON: {{\"score\": \"yes\"}} 或 "
+                '{{"score": "no"}}。\n\n問題: {question}\n\n文件: {documents}'
             )
         else:
             template = (
-                "You are a document grader. Assess if retrieved documents are relevant to the user's question. "
-                'Provide a binary score \'yes\' or \'no\' in JSON format: {"score": "yes"} or {"score": "no"}.'
+                "You are a document grader. Assess if retrieved documents are "
+                "relevant to the user's question. Provide a binary score 'yes' or "
+                '\'no\' in JSON format: {{"score": "yes"}} or {{"score": "no"}}.'
                 "\n\nQuestion: {question}\n\nDocuments: {documents}"
             )
 
@@ -127,8 +127,9 @@ class PromptTemplates:
         else:
             template = (
                 "Use the following retrieved context to answer the question. "
-                "If you don't know the answer, say you don't know. Use three sentences maximum."
-                "\n\nQuestion: {question}\n\nContext: {context}\n\nAnswer:"
+                "If you don't know the answer, say you don't know. Use three "
+                "sentences maximum.\n\nQuestion: {question}\n\nContext: "
+                "{context}\n\nAnswer:"
             )
 
         return PromptTemplate(
@@ -145,9 +146,10 @@ class PromptTemplates:
             )
         else:
             template = (
-                "You are a training assistant. Based on web search results, provide a clear, "
-                "step-by-step answer to the user's question. Include source URLs in your answer."
-                "\n\nQuestion: {question}\n\nWeb Results: {context}"
+                "You are a training assistant. Based on web search results, "
+                "provide a clear, step-by-step answer to the user's question. "
+                "Include source URLs in your answer.\n\nQuestion: {question}\n\n"
+                "Web Results: {context}"
             )
 
         return PromptTemplate(
@@ -271,7 +273,10 @@ class CoreAgent:
                 "documents": documents,
                 "source": "vectorstore",
                 "status": TaskStatus.RUNNING,
-                "progress": {"step": "documents_retrieved", "count": len(documents)},
+                "progress": {
+                    "step": "documents_retrieved",
+                    "count": len(documents),
+                },
             }
 
         except Exception as e:
@@ -308,14 +313,20 @@ class CoreAgent:
                 return {
                     "documents": documents,
                     "status": TaskStatus.RUNNING,
-                    "progress": {"step": "documents_graded", "grade": "relevant"},
+                    "progress": {
+                        "step": "documents_graded",
+                        "grade": "relevant",
+                    },
                 }
             else:
                 logger.info("---DECISION: Documents not relevant, need web search---")
                 return {
                     "documents": [],
                     "status": TaskStatus.RUNNING,
-                    "progress": {"step": "documents_graded", "grade": "not_relevant"},
+                    "progress": {
+                        "step": "documents_graded",
+                        "grade": "not_relevant",
+                    },
                 }
 
         except Exception as e:
@@ -440,7 +451,6 @@ class CoreAgent:
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"SOP_{question[:30].replace(' ', '_')}_{timestamp}.txt"
-            content = f"Question: {question}\n\nAnswer:\n{answer}\n\nSource: Web Search"
 
             # Run in thread pool to avoid blocking
             loop = asyncio.get_event_loop()

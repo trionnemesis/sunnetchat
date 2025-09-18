@@ -3,7 +3,7 @@
 import os
 import asyncio
 from typing import Dict, Any
-from fastapi import FastAPI, Request, Response, BackgroundTasks
+from fastapi import FastAPI, Request
 from slack_bolt.async_app import AsyncApp
 from slack_bolt.adapter.fastapi.async_handler import AsyncSlackRequestHandler
 

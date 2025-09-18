@@ -14,7 +14,8 @@ def build_vector_store(
 
     Args:
         documents: A list of Document objects to be added to the vector store.
-        embedding_model: The embedding model to use for vectorizing the documents.
+        embedding_model: The embedding model to use for vectorizing the
+            documents.
 
     Returns:
         A VectorStore object containing the vectorized documents.

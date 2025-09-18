@@ -11,7 +11,8 @@ def setup_dummy_files():
     """A fixture to create a set of dummy files for the whole test module."""
     dummy_files = {
         "doc1.txt": "This is a text file.",
-        "doc2.pdf": "",  # Mock file, content doesn't matter for loader selection
+        "doc2.pdf": "",  # Mock file, content doesn't matter for loader
+        # selection
         "doc3.docx": "",  # Mock file
         "unsupported.xyz": "Some data",
     }

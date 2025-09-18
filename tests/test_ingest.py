@@ -1,6 +1,6 @@
 import os
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 # This is a placeholder for actual tests.
 # In a real TDD cycle, you would write a failing test first, then the implementation.
