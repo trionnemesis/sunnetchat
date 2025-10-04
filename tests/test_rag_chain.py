@@ -1,8 +1,7 @@
 import pytest
 from langchain_core.documents import Document
-from langchain_core.vectorstores import VectorStore
 from langchain_core.language_models.llms import LLM
-from typing import Any, List, Mapping, Optional
+from typing import Any, List, Optional
 
 from app.vector_store import build_vector_store
 from app.rag_chain import create_rag_chain  # This will fail initially

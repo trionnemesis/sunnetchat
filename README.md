@@ -5,51 +5,34 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi)](https://fastapi.tiangolo.com)
 [![授權條款: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> 一個具備先進 RAG（檢索增強生成）功能的智慧 AI Slack 聊天機器人，專為文件處理、知識管理和即時資訊檢索而設計。
+> 一個具備 RAG（檢索增強生成）功能的 AI Slack 聊天機器人，專為內部文件知識庫問答設計。
 
 ## 🌟 主要功能
 
-### 核心能力
-- **🔍 智慧文件搜尋**：使用向量相似度搜尋從您的內部知識庫中檢索相關資訊
-- **🌐 網路搜尋整合**：當內部文件不包含答案時，自動回退到即時網路搜尋
-- **📚 知識儲存**：自動將新知識儲存到 Google Drive 以供未來參考
-- **⚡ 即時處理**：基於 FastAPI 構建，支援高效能非同步操作
-- **🔒 企業級安全**：具備適當身份驗證的安全 Slack 整合
-
-### RAG 流水線
-- **向量嵌入**：使用 Google 的 `embedding-001` 模型進行語意理解
-- **文件評分**：智慧相關性評分以確定最佳資訊來源
-- **多模態搜尋**：支援文字、圖片、PDF、DOCX、PPTX 等多種格式
-- **對話流程**：由 LangGraph 驅動的對話管理
-
-### 部署與擴展
-- **🐳 Docker 就緒**：使用 Docker Compose 完整容器化
-- **🚀 生產就緒**：針對部署進行最佳化，包含健康檢查和監控
-- **🔄 CI/CD 流水線**：全面的測試、安全掃描和自動化部署
-- **📊 可觀測性**：內建日誌記錄和錯誤處理
+- **🔍 智慧文件搜尋**：使用向量相似度搜尋從內部知識庫中檢索相關資訊。
+- **⚡ 即時處理**：基於 FastAPI 構建，支援高效能非同步操作。
+- **🔒 安全整合**：與 Slack 安全整合，保護企業內部資訊。
+- **🐳 Docker 就緒**：使用 Docker Compose 完整容器化，簡化部署流程。
 
 ## 🏗️ 系統架構
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Slack User    │───▶│   FastAPI App   │───▶│   LangGraph     │
-└─────────────────┘    └─────────────────┘    │   Agent         │
-                                              └─────────────────┘
+┌──────────────┐       ┌────────────────┐      ┌───────────────┐
+│  Slack User  │──────▶│  FastAPI App   │─────▶│  Core Agent   │
+└──────────────┘       └────────────────┘      └───────────────┘
                                                        │
-                       ┌────────────────────────────────┼────────────────────────────────┐
-                       │                                │                                │
-                       ▼                                ▼                                ▼
-           ┌─────────────────┐              ┌─────────────────┐              ┌─────────────────┐
-           │   ChromaDB      │              │   Ollama        │              │   Tavily        │
-           │   (Vector DB)   │              │   (LLM)         │              │   (Web Search)  │
-           └─────────────────┘              └─────────────────┘              └─────────────────┘
-                       │                                                               │
-                       ▼                                                               ▼
-           ┌─────────────────┐                                              ┌─────────────────┐
-           │   Google Drive  │                                              │   Google        │
-           │   (Knowledge    │                                              │   Embeddings    │
-           │    Storage)     │                                              │                 │
-           └─────────────────┘                                              └─────────────────┘
+                                                       ▼
+                                             ┌────────────────┐
+                                             │  RAG Pipeline  │
+                                             └────────────────┘
+                                                       │
+                       ┌───────────────────────────────┼───────────────────────────────┐
+                       │                               │                               │
+                       ▼                               ▼                               ▼
+            ┌────────────────┐             ┌────────────────┐             ┌──────────────────┐
+            │    ChromaDB    │             │     Ollama     │             │ Google Embeddings│
+            │ (Vector Store) │             │     (LLM)      │             │ (Text Embedding) │
+            └────────────────┘             └────────────────┘             └──────────────────┘
 ```
 
 ## 🚀 快速開始
@@ -58,9 +41,8 @@
 
 - Docker 和 Docker Compose
 - Python 3.11+
-- 具有 Bot Token 的 Slack 應用程式
-- Google API 憑證（用於 Drive 和嵌入模型）
-- Tavily API 金鑰（用於網路搜尋）
+- 一個 Slack 應用程式及 Bot Token
+- Google API 憑證 (用於嵌入模型)
 
 ### 1. 複製專案並設定
 
@@ -79,340 +61,115 @@ cp .env.example .env
 SLACK_BOT_TOKEN="xoxb-your-bot-token-here"
 SLACK_SIGNING_SECRET="your-slack-signing-secret-here"
 
-# Google 服務
+# Google Embeddings API 金鑰
+EMBEDDING_MODEL="models/embedding-001"
 GOOGLE_API_KEY="your-google-api-key"
-GOOGLE_DRIVE_FOLDER_ID="your-google-drive-folder-id"
-GOOGLE_APPLICATION_CREDENTIALS_JSON='{"type": "service_account", ...}'
 
-# Tavily 網路搜尋
-TAVILY_API_KEY="tvly-your-tavily-api-key"
-
-# 本地知識庫
-LOCAL_KNOWLEDGE_BASE_PATH="/path/to/your/documents"
+# 本地文件知識庫路徑 (可選)
+SOURCE_DOCS_PATH="./local_documents"
 ```
 
-### 3. 使用 Docker 啟動
+### 3. 將您的文件放入 `local_documents`
+
+將您希望機器人學習的文件（如 `.txt`, `.pdf`, `.docx`）放入專案根目錄下的 `local_documents` 資料夾。
+
+### 4. 使用 Docker 啟動
 
 ```bash
-# 啟動所有服務
-docker-compose up -d
+# 啟動所有服務 (包含資料庫和 LLM)
+docker-compose up -d --build
 
-# 檢查狀態
+# 檢查服務狀態
 docker-compose ps
 
-# 查看日誌
+# 查看應用程式日誌
 docker-compose logs -f app
 ```
 
-### 4. 設定 Slack 整合
+### 5. 匯入知識庫文件
 
-1. 在 [api.slack.com](https://api.slack.com/apps) 建立 Slack 應用程式
-2. 啟用事件訂閱：`http://your-domain.com/slack/events`
-3. 訂閱 `app_mention` 事件
-4. 將應用程式安裝到工作區
-5. 邀請機器人加入頻道：`/invite @YourBot`
+當服務啟動後，執行以下指令來匯入您的文件到向量資料庫：
+
+```bash
+docker-compose exec app python scripts/ingest.py
+```
+
+### 6. 設定 Slack
+
+1.  在 [api.slack.com](https://api.slack.com/apps) 建立一個 Slack 應用程式。
+2.  啟用 **Socket Mode**。
+3.  啟用 **Event Subscriptions**，並訂閱 `app_mention` 事件。
+4.  將應用程式安裝到您的工作區。
+5.  邀請機器人到您想使用的頻道中：`/invite @您的機器人名稱`
 
 ## 🧪 開發指南
 
-### 本地開發環境設定
+### 本地開發環境
 
 ```bash
 # 建立虛擬環境
 python -m venv venv
-source venv/bin/activate  # Windows 系統：venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # 安裝相依套件
 pip install -r requirements.txt
 
-# 分別啟動服務
+# 啟動後端服務
 docker-compose up chromadb ollama -d
 
-# 本地執行應用程式
+# 執行 FastAPI 應用程式
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 執行測試
+### 執行測試與品質檢查
 
 ```bash
 # 執行所有測試
 pytest
 
-# 執行測試並產生覆蓋率報告
-pytest --cov=app --cov-report=html
-
-# 執行特定測試檔案
-pytest tests/test_api.py -v
-
-# 執行整合測試
-pytest tests/test_slack_integration.py -v
-```
-
-### 程式碼品質檢查
-
-```bash
 # 格式化程式碼
-black app/ tests/
+black .
 
-# 程式碼檢查
-flake8 app/ tests/
-
-# 型別檢查（如果使用 mypy）
-mypy app/
+# 程式碼品質檢查
+flake8 .
 ```
 
 ## 📁 專案結構
 
 ```
 sunnetchat/
-├── 📁 app/                     # Main application code
-│   ├── 🐍 main.py             # FastAPI application & Slack handlers
-│   ├── 🧠 agent.py            # LangGraph agent with RAG pipeline
-│   ├── 🏭 factory.py          # Application factory patterns
-│   ├── ⚙️ rag_core.py         # Core RAG functionality
-│   ├── 📊 vector_store.py     # Vector database operations
-│   ├── 🔄 data_processor.py   # Document processing utilities
-│   ├── 📁 gdrive_utils.py     # Google Drive integration
-│   └── 🌊 graph_flow.py       # LangGraph workflow definitions
-├── 🧪 tests/                  # Comprehensive test suite
-│   ├── 🧪 test_api.py         # API endpoint tests
-│   ├── 🧪 test_rag_core.py    # RAG pipeline tests
-│   ├── 🧪 test_slack_integration.py  # Slack integration tests
-│   ├── 🧪 test_vector_store.py      # Vector database tests
-│   └── 🧪 conftest.py         # Test configuration & fixtures
-├── 📁 scripts/               # Utility scripts
-│   └── 🐍 ingest.py          # Document ingestion script
-├── 🔧 .github/workflows/     # CI/CD pipeline
-│   └── ⚙️ ci.yml             # GitHub Actions configuration
-├── 🐳 docker-compose.yml     # Multi-container setup
-├── 🐳 Dockerfile            # Application container
-├── 📋 requirements.txt       # Python dependencies
-└── 📖 README.md             # This file
+├── 📁 app/                 # 主要應用程式原始碼
+│   ├── 🐍 main.py         # FastAPI 應用程式與 Slack 事件處理
+│   ├── 🧠 core_agent.py    # 核心代理與 RAG 邏輯
+│   └── ⚙️ rag_core.py     # RAG 核心功能
+├── 🧪 tests/              # 測試程式碼
+├── 📁 scripts/           # 工具腳本
+│   └── 🐍 ingest.py      # 文件匯入腳本
+├── 🔧 .github/workflows/ # CI/CD 工作流程
+├── 🐳 docker-compose.yml # Docker Compose 設定
+├── 🐳 Dockerfile        # 應用程式容器設定
+├── 📋 requirements.txt   # Python 相依套件
+└── 📖 README.md         # 本文件
 ```
 
-## 🔧 設定配置
-
-### 環境變數
+## 🔧 環境變數
 
 | 變數名稱 | 描述 | 必要性 | 預設值 |
-|----------|-------------|----------|---------|
+|---|---|---|---|
 | `SLACK_BOT_TOKEN` | Slack 機器人的 OAuth Token | ✅ | - |
 | `SLACK_SIGNING_SECRET` | Slack 應用程式簽名秘鑰 | ✅ | - |
-| `GOOGLE_API_KEY` | Google 嵌入模型的 API 金鑰 | ✅ | - |
-| `GOOGLE_DRIVE_FOLDER_ID` | Google Drive 儲存資料夾 ID | ✅ | - |
-| `TAVILY_API_KEY` | Tavily 網路搜尋的 API 金鑰 | ✅ | - |
-| `LOCAL_KNOWLEDGE_BASE_PATH` | 本地文件路徑 | ❌ | `/app/local_documents` |
+| `EMBEDDING_MODEL` | Google 嵌入模型的名稱 | ❌ | `models/embedding-001` |
+| `GOOGLE_API_KEY` | Google API 金鑰 | ✅ | - |
+| `SOURCE_DOCS_PATH` | 本地文件存放路徑 | ❌ | `/app/local_documents` |
 | `CHROMA_HOST` | ChromaDB 主機位址 | ❌ | `chromadb` |
 | `CHROMA_PORT` | ChromaDB 連接埠 | ❌ | `8000` |
 | `OLLAMA_BASE_URL` | Ollama 服務 URL | ❌ | `http://ollama:11434` |
-| `LLM_MODEL` | Ollama 模型名稱 | ❌ | `llama3` |
-
-### Docker 服務
-
-- **app**：主要的 FastAPI 應用程式（連接埠：8000）
-- **ollama**：本地 LLM 服務（連接埠：11434）
-- **chromadb**：向量資料庫（連接埠：8001）
-
-## 🤖 使用方式
-
-### Slack 指令
-
-在任何頻道中提及您的機器人：
-
-```
-@SunnetBot 我們公司的遠端工作政策是什麼？
-@SunnetBot 如何設定開發環境？
-@SunnetBot AI 領域的最新行業趋勢是什麼？
-```
-
-### API 端點
-
-- `GET /` - 健康檢查端點
-- `POST /slack/events` - Slack 事件 webhook
-- `GET /docs` - API 文件（Swagger UI）
-
-## 🧠 運作原理
-
-### RAG 流水線流程
-
-1. **接收問題**：使用者在 Slack 中提及機器人
-2. **文件檢索**：使用向量相似度搜尋內部知識庫
-3. **相關性評分**：AI 判斷檢索到的文件是否相關
-4. **生成回答**：
-   - 如果找到相關文件 → 從內部知識生成答案
-   - 如果沒有相關文件 → 搜尋網路並生成答案
-5. **知識儲存**：新資訊自動儲存到 Google Drive
-6. **回答傳遞**：將最終答案傳回給 Slack 使用者
-
-### 支援的文件類型
-
-- **文字檔案**：`.txt`、`.md`、`.csv`
-- **辦公文件**：`.docx`、`.pptx`、`.xlsx`
-- **PDF 文件**：支援 OCR 的 `.pdf` 檔案
-- **圖片檔案**：`.jpg`、`.png`、`.gif`（支援 OCR）
-- **網頁內容**：URL 和網頁爬取功能
-
-## 🔄 CI/CD 流水線
-
-這個專案包含了完整的 GitHub Actions 流水線：
-
-### 自動化測試
-- ✅ 單元測試和整合測試
-- ✅ 程式碼覆蓋率報告
-- ✅ 程式碼檢查和格式化驗證
-- ✅ 安全漏洞掃描
-
-### 構建與部署
-- 🏗️ Docker 鏡像構建
-- 🧪 容器功能測試
-- 🔒 使用 Trivy 進行安全掃描
-- 📊 程式碼品質指標
-
-### 觸發條件
-- 推送到 `master` 或 `develop` 分支
-- 向 `master` 分支發起 Pull Request
-- 手動觸發工作流程
-
-## 🔒 安全性
-
-### 最佳實踐
-- 🔐 使用環境變數儲存敏感資料
-- 🛡️ 輸入驗證和清理
-- 🔍 定期更新相依套件
-- 📝 全面的日誌記錄，不暴露敏感資訊
-- 🚨 自動化安全掃描
-
-### Slack 安全性
-- ✅ 所有要求的簽名驗證
-- ✅ 機器人令牌驗證
-- ✅ 限速保護
-- ✅ 安全的 webhook 端點
-
-## 🚀 生產環境部署
-
-### Docker 部署
-
-```bash
-# 生產環境構建
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-
-# 自定義設定
-docker run -d \
-  --name sunnetchat \
-  -p 8000:8000 \
-  --env-file .env.prod \
-  -v /path/to/docs:/app/local_documents \
-  sunnetchat:latest
-```
-
-### 環境考量事項
-
-- **資源需求**：最低 2GB 記憶體、2 CPU 核心
-- **儲存空間**：向量資料庫需要持久化儲存
-- **網路設定**：確保防火牆允許 Slack webhook 訪問
-- **監控**：設定健康檢查和警告
-
-## 🤝 貢獻指南
-
-歡迎大家貢獻！請參閱我們的[貢獻指南](CONTRIBUTING.md)以獲取詳細資訊。
-
-### 開發工作流程
-
-1. Fork 這個儲存庫
-2. 建立功能分支 (`git checkout -b feature/amazing-feature`)
-3. 進行修改
-4. 為新功能新增測試
-5. 確保所有測試通過 (`pytest`)
-6. 提交修改 (`git commit -m 'Add amazing feature'`)
-7. 推送到分支 (`git push origin feature/amazing-feature`)
-8. 開啟 Pull Request
-
-### 程式碼標準
-
-- 遵循 PEP 8 編程風格指南
-- 適當新增型別提示
-- 編寫全面的測試
-- 更新新功能的文件
-- 確保 CI/CD 流水線通過
-
-## 📚 文件
-
-- **API 文件**：應用程式執行時可在 `/docs` 查看
-- **系統架構**：參閱 `docs/architecture.md`
-- **部署指南**：參閱 `docs/deployment.md`
-- **問題排除**：參閱 `docs/troubleshooting.md`
-
-## 🔧 問題排除
-
-### 常見問題
-
-#### 機器人無回應
-```bash
-# 檢查容器狀態
-docker-compose ps
-
-# 檢查日誌
-docker-compose logs app
-
-# 驗證 Slack webhook
-curl -X POST http://localhost:8000/slack/events
-```
-
-#### 向量資料庫問題
-```bash
-# 重設 ChromaDB
-docker-compose down -v
-docker-compose up chromadb -d
-
-# 重新匯入文件
-python scripts/ingest.py
-```
-
-#### Ollama 模型問題
-```bash
-# 下載所需模型
-docker exec -it ollama ollama pull llama3
-
-# 列出可用模型
-docker exec -it ollama ollama list
-```
-
-## 📈 效能最佳化
-
-### 向量資料庫調整
-- 調整區塊大小以改善檢索效果
-- 最佳化嵌入維度
-- 使用適當的索引策略
-
-### LLM 效能
-- 選擇適當的模型大小
-- 實現回應快取
-- 為長回應使用串流
-
-### 擴展考量事項
-- 使用負載均衡器實現水平擴展
-- 使用 Redis 進行工作階段管理
-- 考量多區域部署
-
-## 📄 授權條款
-
-此專案採用 MIT 授權條款 - 請參閱 [LICENSE](LICENSE) 檔案以獲取詳細資訊。
+| `OLLAMA_MODEL` | Ollama 模型名稱 | ❌ | `llama3` |
 
 ## 🙏 致謝
 
-- **LangChain**：提供優秀的 RAG 框架
-- **FastAPI**：提供高效能的 Web 框架
-- **Slack**：提供全面的機器人平台
-- **ChromaDB**：提供向量資料庫解決方案
-- **Ollama**：提供本地 LLM 功能
-
-## 📞 支援與聯繫
-
-- **問題回報**：[GitHub Issues](https://github.com/trionnemesis/sunnetchat/issues)
-- **討論區**：[GitHub Discussions](https://github.com/trionnemesis/sunnetchat/discussions)
-- **電子郵件**：support@sunnetchat.com
-
----
-
-<div align="center">
-  <sub>由 SunnetChat 團隊用 ❤️ 精心打造</sub>
-</div>
+- **LangChain**
+- **FastAPI**
+- **Slack**
+- **ChromaDB**
+- **Ollama**

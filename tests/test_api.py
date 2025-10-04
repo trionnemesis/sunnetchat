@@ -4,12 +4,11 @@ from unittest.mock import patch, MagicMock, AsyncMock
 import os
 
 from fastapi import Response
+from app.main import app
 
 # Set dummy environment variables for testing
 os.environ["SLACK_SIGNING_SECRET"] = "test_secret"
 os.environ["SLACK_BOT_TOKEN"] = "test_token"
-
-from app.main import app
 
 
 client = TestClient(app)

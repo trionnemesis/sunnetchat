@@ -251,7 +251,7 @@ class TestCoreAgent:
 
         # Assert
         assert result["status"] == TaskStatus.COMPLETED
-        assert result["progress"]["saved"] == True
+        assert result["progress"]["saved"] is True
 
         # Wait a bit for the background task
         await asyncio.sleep(0.1)
@@ -271,7 +271,7 @@ class TestCoreAgent:
 
         # Assert
         assert result["status"] == TaskStatus.COMPLETED
-        assert result["progress"]["saved"] == False
+        assert result["progress"]["saved"] is False
 
     @pytest.mark.asyncio
     @patch("app.core_agent.CoreAgent.retrieve_documents")
