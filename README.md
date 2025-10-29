@@ -28,6 +28,14 @@
 - **🔄 CI/CD 流水線**：全面的測試、安全掃描和自動化部署
 - **📊 可觀測性**：內建日誌記錄和錯誤處理
 
+### Docker 優化特性
+- **🏗️ 多階段構建**：分離構建和運行環境，減少映像檔體積約 30-40%
+- **🔒 非 root 用戶**：使用專用 appuser (UID 1000) 運行，增強容器安全性
+- **❤️ 健康檢查**：每 30 秒自動監控應用程式運行狀態，支援自動重啟
+- **📦 智慧快取**：.dockerignore 優化構建效率，排除不必要的檔案
+- **📚 豐富依賴**：完整支援 OCR（中文繁體）、PDF、DOCX/PPTX 文件處理
+- **⚡ 多 Worker**：預設 4 個 worker 進程，提升並發處理能力
+
 ## 🏗️ 系統架構
 
 ```
@@ -94,15 +102,25 @@ LOCAL_KNOWLEDGE_BASE_PATH="/path/to/your/documents"
 ### 3. 使用 Docker 啟動
 
 ```bash
+# 首次啟動前，請確認 docker-compose.yml 中的卷掛載路徑
+# 預設掛載：C:\SUNNET:/app/local_documents
+# 請根據您的系統修改為適合的路徑（Windows/Linux/macOS）
+
 # 啟動所有服務
 docker-compose up -d
 
-# 檢查狀態
+# 檢查狀態（確認健康檢查通過）
 docker-compose ps
 
 # 查看日誌
 docker-compose logs -f app
+
+# 驗證應用程式是否正常運行
+curl http://localhost:8000/
+# 預期回應：{"status":"ok"} 或類似的健康檢查回應
 ```
+
+**提示**：健康檢查可能需要 30-40 秒才會顯示為 "healthy" 狀態，這是正常的啟動時間。
 
 ### 4. 設定 Slack 整合
 
@@ -184,7 +202,8 @@ sunnetchat/
 ├── 🔧 .github/workflows/     # CI/CD pipeline
 │   └── ⚙️ ci.yml             # GitHub Actions configuration
 ├── 🐳 docker-compose.yml     # Multi-container setup
-├── 🐳 Dockerfile            # Application container
+├── 🐳 Dockerfile            # Application container (multi-stage build)
+├── 🚫 .dockerignore         # Docker build optimization
 ├── 📋 requirements.txt       # Python dependencies
 └── 📖 README.md             # This file
 ```
@@ -205,12 +224,30 @@ sunnetchat/
 | `CHROMA_PORT` | ChromaDB 連接埠 | ❌ | `8000` |
 | `OLLAMA_BASE_URL` | Ollama 服務 URL | ❌ | `http://ollama:11434` |
 | `LLM_MODEL` | Ollama 模型名稱 | ❌ | `llama3` |
+| `PORT` | 應用程式監聽埠 | ❌ | `8000` |
+| `WORKERS` | Uvicorn worker 進程數量 | ❌ | `4` |
+| `LOG_LEVEL` | 日誌級別（debug/info/warning/error） | ❌ | `info` |
 
 ### Docker 服務
 
-- **app**：主要的 FastAPI 應用程式（連接埠：8000）
-- **ollama**：本地 LLM 服務（連接埠：11434）
-- **chromadb**：向量資料庫（連接埠：8001）
+- **app**：主要的 FastAPI 應用程式
+  - **連接埠**：8000（可透過 `PORT` 環境變數配置）
+  - **執行用戶**：appuser (UID 1000，非 root 用戶)
+  - **健康檢查**：每 30 秒檢查一次 `/` 端點
+  - **Worker 數量**：預設 4 個（可透過 `WORKERS` 環境變數調整）
+  - **系統依賴**：
+    - `tesseract-ocr` + `tesseract-ocr-chi-tra`：中文繁體 OCR 支援
+    - `libmagic1`：檔案類型偵測（unstructured 套件所需）
+    - `poppler-utils`：PDF 處理和轉換
+    - `pandoc`：DOCX/PPTX 文件轉換
+    - `curl`：健康檢查工具
+- **ollama**：本地 LLM 推理服務
+  - **連接埠**：11434
+  - **預設模型**：llama3
+- **chromadb**：向量資料庫服務
+  - **連接埠**：8001（避免與 FastAPI 的 8000 埠衝突）
+  - **集合**：internal_sop
+  - **嵌入維度**：由 Google embedding-001 模型決定
 
 ## 🤖 使用方式
 
@@ -292,17 +329,47 @@ sunnetchat/
 ### Docker 部署
 
 ```bash
-# 生產環境構建
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# 基本生產環境構建和啟動
+docker-compose up -d
 
-# 自定義設定
+# 自定義配置運行（進階選項）
 docker run -d \
   --name sunnetchat \
   -p 8000:8000 \
   --env-file .env.prod \
+  -e PORT=8000 \
+  -e WORKERS=4 \
+  -e LOG_LEVEL=info \
   -v /path/to/docs:/app/local_documents \
+  --user 1000:1000 \
+  --restart unless-stopped \
+  sunnetchat:latest
+
+# 檢查健康狀態
+docker inspect --format='{{.State.Health.Status}}' slack_agent_app
+# 預期輸出：healthy
+
+# 查看健康檢查日誌
+docker inspect --format='{{range .State.Health.Log}}{{.Output}}{{end}}' slack_agent_app
+
+# 調整 worker 數量以提升效能
+docker run -d \
+  -e WORKERS=8 \
+  -p 8000:8000 \
+  --env-file .env \
   sunnetchat:latest
 ```
+
+### Docker 安全最佳實踐
+
+本專案已實施以下安全措施：
+
+- ✅ **非 root 執行**：容器以非特權用戶 `appuser` (UID 1000) 運行
+- ✅ **多階段構建**：分離構建和運行環境，最小化攻擊面
+- ✅ **健康檢查**：自動監控並重啟故障容器
+- ✅ **.dockerignore**：防止敏感文件和不必要文件進入映像檔
+- ✅ **最小依賴**：僅安裝運行時必需的系統套件
+- ✅ **定期掃描**：CI/CD 流水線包含 Trivy 安全掃描
 
 ### 環境考量事項
 
@@ -375,6 +442,37 @@ docker exec -it ollama ollama pull llama3
 # 列出可用模型
 docker exec -it ollama ollama list
 ```
+
+#### 容器健康檢查失敗
+```bash
+# 檢查容器健康狀態
+docker inspect --format='{{.State.Health.Status}}' slack_agent_app
+# 可能的狀態：healthy, unhealthy, starting
+
+# 查看健康檢查日誌
+docker inspect --format='{{range .State.Health.Log}}{{.Output}}{{end}}' slack_agent_app
+
+# 手動測試健康檢查端點
+curl http://localhost:8000/
+# 應回應 JSON 格式的健康狀態
+
+# 檢查容器日誌中的錯誤
+docker logs slack_agent_app --tail 50
+
+# 如果持續失敗，重啟容器
+docker-compose restart app
+
+# 完全重建（清除所有快取）
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+**常見健康檢查失敗原因**：
+- 應用程式啟動時間過長（等待 40 秒後重試）
+- 環境變數配置錯誤（檢查 `.env` 檔案）
+- 依賴服務未就緒（確認 ChromaDB 和 Ollama 正常運行）
+- 連接埠衝突（確認 8000 埠未被佔用）
 
 ## 📈 效能最佳化
 
