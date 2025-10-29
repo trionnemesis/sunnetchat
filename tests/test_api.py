@@ -26,7 +26,7 @@ def mock_agent():
         mock_instance = MagicMock()
         mock_instance.process_question.return_value = {
             "generation": "這是來自代理的模擬答案。",
-            "status": "completed"
+            "status": "completed",
         }
         mock_get_agent.return_value = mock_instance
         yield mock_get_agent
@@ -48,7 +48,11 @@ def test_slack_url_verification():
     # Mock the app handler to simulate URL verification
     with patch("app.main.app_handler") as mock_handler:
         from fastapi import Response
-        mock_response = Response(content='{"challenge": "test_challenge_string"}', media_type="application/json")
+
+        mock_response = Response(
+            content='{"challenge": "test_challenge_string"}',
+            media_type="application/json",
+        )
         mock_handler.handle.return_value = mock_response
         response = client.post("/slack/events", json=challenge_data)
     assert response.status_code == 200
@@ -69,7 +73,10 @@ def test_app_mention_event(mock_slack_app, mock_agent):
     # Mock the app handler response
     with patch("app.main.app_handler") as mock_handler:
         from fastapi import Response
-        mock_response = Response(content='{"status": "ok"}', media_type="application/json")
+
+        mock_response = Response(
+            content='{"status": "ok"}', media_type="application/json"
+        )
         mock_handler.handle.return_value = mock_response
         response = client.post("/slack/events", json=event_data)
 
@@ -81,7 +88,10 @@ def test_slack_endpoint_with_mock_handler():
     """Tests that the Slack endpoint uses the handler correctly."""
     with patch("app.main.app_handler") as mock_handler:
         from fastapi import Response
-        mock_response = Response(content='{"test": "response"}', media_type="application/json")
+
+        mock_response = Response(
+            content='{"test": "response"}', media_type="application/json"
+        )
         mock_handler.handle.return_value = mock_response
         response = client.post("/slack/events", json={})
     assert response.status_code == 200
